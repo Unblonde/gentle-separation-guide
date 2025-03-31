@@ -1,5 +1,8 @@
+
 import { useLocation } from "react-router-dom";
 import { useEffect } from "react";
+import GOVUKLayout from "../components/GOVUKLayout";
+import { Link } from "react-router-dom";
 
 const NotFound = () => {
   const location = useLocation();
@@ -12,15 +15,18 @@ const NotFound = () => {
   }, [location.pathname]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4">404</h1>
-        <p className="text-xl text-gray-600 mb-4">Oops! Page not found</p>
-        <a href="/" className="text-blue-500 hover:text-blue-700 underline">
-          Return to Home
-        </a>
+    <GOVUKLayout>
+      <div className="max-w-3xl">
+        <h1>Page not found</h1>
+        <p className="text-xl mb-6">If you typed the web address, check it is correct.</p>
+        <p className="mb-6">If you pasted the web address, check you copied the entire address.</p>
+        <p className="mb-6">
+          <Link to="/" className="text-govuk-blue hover:underline">
+            Return to the home page
+          </Link>
+        </p>
       </div>
-    </div>
+    </GOVUKLayout>
   );
 };
 

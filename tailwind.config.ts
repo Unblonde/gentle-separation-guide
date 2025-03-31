@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -52,16 +53,19 @@ export default {
 					DEFAULT: 'hsl(var(--card))',
 					foreground: 'hsl(var(--card-foreground))'
 				},
-				sidebar: {
-					DEFAULT: 'hsl(var(--sidebar-background))',
-					foreground: 'hsl(var(--sidebar-foreground))',
-					primary: 'hsl(var(--sidebar-primary))',
-					'primary-foreground': 'hsl(var(--sidebar-primary-foreground))',
-					accent: 'hsl(var(--sidebar-accent))',
-					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
-					border: 'hsl(var(--sidebar-border))',
-					ring: 'hsl(var(--sidebar-ring))'
+				govuk: {
+					blue: 'hsl(var(--govuk-blue))',
+					'light-blue': 'hsl(var(--govuk-light-blue))',
+					'dark-blue': 'hsl(var(--govuk-dark-blue))',
+					yellow: 'hsl(var(--govuk-yellow))',
+					green: 'hsl(var(--govuk-green))',
+					red: 'hsl(var(--govuk-red))',
+					focus: 'hsl(var(--govuk-focus))',
+					black: '#0b0c0c',
 				}
+			},
+			fontFamily: {
+				sans: ['GDS Transport', 'Arial', 'sans-serif'],
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
