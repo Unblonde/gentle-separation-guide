@@ -14,7 +14,7 @@ const Help = () => {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
-      content: 'Hello, I'm here to help you with questions about separation and your parenting arrangements. What can I help you with today?',
+      content: "Hello, I'm here to help you with questions about separation and your parenting arrangements. What can I help you with today?",
       sender: 'assistant',
       timestamp: new Date()
     }
@@ -52,15 +52,15 @@ const Help = () => {
       let responseContent = '';
       
       if (lowercaseInput.includes('holiday') || lowercaseInput.includes('vacation')) {
-        responseContent = 'I can see from your parenting plan that you have 3 upcoming holiday arrangements. Would you like me to help you with planning another holiday or understanding the current arrangements?';
+        responseContent = "I can see from your parenting plan that you have 3 upcoming holiday arrangements. Would you like me to help you with planning another holiday or understanding the current arrangements?";
       } else if (lowercaseInput.includes('mediation') || lowercaseInput.includes('mediator')) {
-        responseContent = 'Mediation can help you and your ex-partner agree on arrangements for your children. A mediator is an independent, trained professional who helps you reach agreements without going to court. You can find local mediators through the Family Mediation Council: https://www.familymediationcouncil.org.uk/';
+        responseContent = "Mediation can help you and your ex-partner agree on arrangements for your children. A mediator is an independent, trained professional who helps you reach agreements without going to court. You can find local mediators through the Family Mediation Council: https://www.familymediationcouncil.org.uk/";
       } else if (lowercaseInput.includes('money') || lowercaseInput.includes('financial') || lowercaseInput.includes('finance')) {
-        responseContent = 'Based on your financial arrangements, you currently have 3 agreed items and 3 items where you and your ex-partner have different views. Would you like information about child maintenance calculations or help with discussing the disagreed items?';
+        responseContent = "Based on your financial arrangements, you currently have 3 agreed items and 3 items where you and your ex-partner have different views. Would you like information about child maintenance calculations or help with discussing the disagreed items?";
       } else if (lowercaseInput.includes('court') || lowercaseInput.includes('legal')) {
-        responseContent = 'Going to court should usually be a last resort. Before applying to court, you'll need to attend a Mediation Information and Assessment Meeting (MIAM), unless exemptions apply such as in cases involving domestic abuse. Would you like information about the court process or alternatives to court?';
+        responseContent = "Going to court should usually be a last resort. Before applying to court, you'll need to attend a Mediation Information and Assessment Meeting (MIAM), unless exemptions apply such as in cases involving domestic abuse. Would you like information about the court process or alternatives to court?";
       } else {
-        responseContent = 'Thank you for your question. I can provide information about parenting arrangements, financial matters, and support services. Would you like to know more about any specific area of separation or co-parenting?';
+        responseContent = "Thank you for your question. I can provide information about parenting arrangements, financial matters, and support services. Would you like to know more about any specific area of separation or co-parenting?";
       }
       
       const assistantMessage: Message = {
