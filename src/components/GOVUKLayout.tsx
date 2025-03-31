@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
+import UserMenu from './UserMenu';
 
 interface GOVUKLayoutProps {
   children: React.ReactNode;
@@ -23,6 +24,7 @@ const GOVUKLayout: React.FC<GOVUKLayoutProps> = ({ children }) => {
                 <li><Link to="/parenting-plan" className="text-white hover:underline">Parenting plan</Link></li>
                 <li><Link to="/finances" className="text-white hover:underline">Financial arrangements</Link></li>
                 <li><Link to="/help" className="text-white hover:underline">Get help</Link></li>
+                <li><UserMenu /></li>
               </ul>
             </nav>
           </div>
