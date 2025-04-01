@@ -6,7 +6,7 @@ export interface Message {
   timestamp: Date;
   sender_details?: {
     full_name?: string;
-  };
+  } | undefined;
 }
 
 // Define a utility function to map from Supabase chat message to our Message type

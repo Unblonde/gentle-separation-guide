@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import GOVUKLayout from '../components/GOVUKLayout';
@@ -8,12 +7,18 @@ import { useToast } from '@/hooks/use-toast';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 
+interface Profile {
+  id: string;
+  full_name: string | null;
+  updated_at: string | null;
+}
+
 const Profile = () => {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
-  const [profile, setProfile] = useState<any>(null);
-  const [family, setFamily] = useState<any>(null);
+  const [profile, setProfile] = useState<Profile | null>(null);
+  const [family, setFamily] = useState<{family_id: string} | null>(null);
   const [fullName, setFullName] = useState('');
   const [partnerEmail, setPartnerEmail] = useState('');
   const [isSaving, setIsSaving] = useState(false);
@@ -30,7 +35,7 @@ const Profile = () => {
       if (user) {
         try {
           // Load user profile
-          const profileData = await getProfile(user.id);
+          const profileData = await getProfile(user.id) as Profile;
           setProfile(profileData);
           if (profileData && profileData.full_name) {
             setFullName(profileData.full_name);
@@ -38,7 +43,7 @@ const Profile = () => {
           
           // Load family data
           const familyData = await getFamilyForUser(user.id);
-          setFamily(familyData);
+          setFamily(familyData as {family_id: string} | null);
         } catch (error: any) {
           console.error('Error loading user data:', error);
           toast({
@@ -97,7 +102,7 @@ const Profile = () => {
       
       // Refresh family data
       const familyData = await getFamilyForUser(user.id);
-      setFamily(familyData);
+      setFamily(familyData as {family_id: string} | null);
     } catch (error: any) {
       console.error('Error creating family:', error);
       toast({

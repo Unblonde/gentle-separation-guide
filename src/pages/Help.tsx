@@ -12,7 +12,7 @@ const Help = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState('');
   const [isBlocked, setIsBlocked] = useState(false);
-  const [family, setFamily] = useState<any>(null);
+  const [family, setFamily] = useState<{family_id: string} | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -21,9 +21,9 @@ const Help = () => {
         try {
           // Load family data
           const familyData = await getFamilyForUser(user.id);
-          setFamily(familyData);
+          setFamily(familyData as {family_id: string} | null);
           
-          if (familyData && familyData.family_id) {
+          if (familyData && 'family_id' in familyData) {
             // Load chat messages
             const chatMessages = await getChatMessages(familyData.family_id);
             

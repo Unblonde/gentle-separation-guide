@@ -205,7 +205,12 @@ export interface DatabaseExtended {
   };
 }
 
-// Override the default Database type with our extended version
+// Force TypeScript to use our extended database type
+declare global {
+  type Database = DatabaseExtended;
+}
+
+// Override the default Database type in Supabase
 declare module '@supabase/supabase-js' {
-  interface Database extends DatabaseExtended {}
+  export interface Database extends DatabaseExtended {}
 }

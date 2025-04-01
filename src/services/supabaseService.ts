@@ -1,13 +1,17 @@
 
 import { supabase } from '@/integrations/supabase/client';
 import { v4 as uuidv4 } from 'uuid';
-import { DatabaseExtended } from '@/types/database';
+import { FamilyData } from '@/types/family';
 import { mapChatMessageToMessage } from '@/types/message';
+
+// Define a type for Supabase service functions
+type SupabaseTable = 'profiles' | 'family_units' | 'family_members' | 'invitations' | 
+                     'financial_arrangements' | 'holiday_arrangements' | 'chat_messages';
 
 // Profile services
 export const getProfile = async (userId: string) => {
   const { data, error } = await supabase
-    .from('profiles')
+    .from('profiles' as SupabaseTable)
     .select('*')
     .eq('id', userId)
     .single();
@@ -19,7 +23,7 @@ export const getProfile = async (userId: string) => {
 
 export const updateProfile = async (userId: string, updates: any) => {
   const { data, error } = await supabase
-    .from('profiles')
+    .from('profiles' as SupabaseTable)
     .update(updates)
     .eq('id', userId);
     
@@ -29,22 +33,22 @@ export const updateProfile = async (userId: string, updates: any) => {
 };
 
 // Family services
-export const getFamilyForUser = async (userId: string) => {
+export const getFamilyForUser = async (userId: string): Promise<FamilyData | null> => {
   const { data, error } = await supabase
-    .from('family_members')
+    .from('family_members' as SupabaseTable)
     .select('family_id, family_units(*)')
     .eq('user_id', userId)
     .single();
     
   if (error && error.code !== 'PGRST116') throw error;
   
-  return data;
+  return data as FamilyData | null;
 };
 
 export const createFamily = async (userId: string, role: string) => {
   // Create a new family unit
   const { data: familyData, error: familyError } = await supabase
-    .from('family_units')
+    .from('family_units' as SupabaseTable)
     .insert({})
     .select();
     
@@ -58,7 +62,7 @@ export const createFamily = async (userId: string, role: string) => {
   
   // Add current user as a family member
   const { data: memberData, error: memberError } = await supabase
-    .from('family_members')
+    .from('family_members' as SupabaseTable)
     .insert({
       user_id: userId,
       family_id: familyId,
@@ -75,7 +79,7 @@ export const invitePartner = async (familyId: string, email: string, invitedBy: 
   const token = uuidv4();
   
   const { data, error } = await supabase
-    .from('invitations')
+    .from('invitations' as SupabaseTable)
     .insert({
       family_id: familyId,
       invited_by: invitedBy,
@@ -93,7 +97,7 @@ export const invitePartner = async (familyId: string, email: string, invitedBy: 
 export const acceptInvitation = async (token: string, userId: string, role: string) => {
   // Get the invitation
   const { data: invitation, error: inviteError } = await supabase
-    .from('invitations')
+    .from('invitations' as SupabaseTable)
     .select('*')
     .eq('token', token)
     .eq('status', 'pending')
@@ -105,7 +109,7 @@ export const acceptInvitation = async (token: string, userId: string, role: stri
   
   // Add user to the family
   const { data: memberData, error: memberError } = await supabase
-    .from('family_members')
+    .from('family_members' as SupabaseTable)
     .insert({
       user_id: userId,
       family_id: invitation.family_id,
@@ -116,7 +120,7 @@ export const acceptInvitation = async (token: string, userId: string, role: stri
   
   // Update invitation status
   const { data, error } = await supabase
-    .from('invitations')
+    .from('invitations' as SupabaseTable)
     .update({ status: 'accepted' })
     .eq('id', invitation.id);
     
@@ -128,7 +132,7 @@ export const acceptInvitation = async (token: string, userId: string, role: stri
 // Financial arrangements services
 export const getFinancialArrangements = async (familyId: string) => {
   const { data, error } = await supabase
-    .from('financial_arrangements')
+    .from('financial_arrangements' as SupabaseTable)
     .select('*')
     .eq('family_id', familyId)
     .order('created_at', { ascending: false });
@@ -140,7 +144,7 @@ export const getFinancialArrangements = async (familyId: string) => {
 
 export const addFinancialArrangement = async (arrangement: any) => {
   const { data, error } = await supabase
-    .from('financial_arrangements')
+    .from('financial_arrangements' as SupabaseTable)
     .insert(arrangement)
     .select();
     
@@ -151,7 +155,7 @@ export const addFinancialArrangement = async (arrangement: any) => {
 
 export const updateFinancialArrangement = async (id: string, updates: any) => {
   const { data, error } = await supabase
-    .from('financial_arrangements')
+    .from('financial_arrangements' as SupabaseTable)
     .update(updates)
     .eq('id', id)
     .select();
@@ -164,7 +168,7 @@ export const updateFinancialArrangement = async (id: string, updates: any) => {
 // Holiday arrangements services
 export const getHolidayArrangements = async (familyId: string) => {
   const { data, error } = await supabase
-    .from('holiday_arrangements')
+    .from('holiday_arrangements' as SupabaseTable)
     .select('*')
     .eq('family_id', familyId)
     .order('start_date', { ascending: true });
@@ -176,7 +180,7 @@ export const getHolidayArrangements = async (familyId: string) => {
 
 export const addHolidayArrangement = async (arrangement: any) => {
   const { data, error } = await supabase
-    .from('holiday_arrangements')
+    .from('holiday_arrangements' as SupabaseTable)
     .insert(arrangement)
     .select();
     
@@ -187,7 +191,7 @@ export const addHolidayArrangement = async (arrangement: any) => {
 
 export const updateHolidayArrangement = async (id: string, updates: any) => {
   const { data, error } = await supabase
-    .from('holiday_arrangements')
+    .from('holiday_arrangements' as SupabaseTable)
     .update(updates)
     .eq('id', id)
     .select();
@@ -199,7 +203,7 @@ export const updateHolidayArrangement = async (id: string, updates: any) => {
 
 export const deleteHolidayArrangement = async (id: string) => {
   const { error } = await supabase
-    .from('holiday_arrangements')
+    .from('holiday_arrangements' as SupabaseTable)
     .delete()
     .eq('id', id);
     
@@ -211,7 +215,7 @@ export const deleteHolidayArrangement = async (id: string) => {
 // Chat messages services
 export const getChatMessages = async (familyId: string) => {
   const { data, error } = await supabase
-    .from('chat_messages')
+    .from('chat_messages' as SupabaseTable)
     .select('*, profiles:sender_id(full_name)')
     .eq('family_id', familyId)
     .order('created_at', { ascending: true });
@@ -223,7 +227,7 @@ export const getChatMessages = async (familyId: string) => {
 
 export const addChatMessage = async (message: any) => {
   const { data, error } = await supabase
-    .from('chat_messages')
+    .from('chat_messages' as SupabaseTable)
     .insert(message)
     .select();
     

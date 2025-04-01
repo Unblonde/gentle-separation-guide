@@ -6,7 +6,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAuth } from '@/contexts/AuthContext';
 import { getFamilyForUser, getFinancialArrangements, addFinancialArrangement, updateFinancialArrangement, subscribeToFinancialArrangements } from '@/services/supabaseService';
 import { useToast } from '@/hooks/use-toast';
-import { supabase } from '@/integrations/supabase/client';
 import {
   Dialog,
   DialogContent,
@@ -43,7 +42,7 @@ const Finances = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [financialItems, setFinancialItems] = useState<FinancialItem[]>([]);
-  const [family, setFamily] = useState<any>(null);
+  const [family, setFamily] = useState<{family_id: string} | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
   const [editItem, setEditItem] = useState<FinancialItem | null>(null);
@@ -65,9 +64,9 @@ const Finances = () => {
         try {
           // Load family data
           const familyData = await getFamilyForUser(user.id);
-          setFamily(familyData);
+          setFamily(familyData as {family_id: string} | null);
           
-          if (familyData && familyData.family_id) {
+          if (familyData && 'family_id' in familyData) {
             // Load financial arrangements
             const arrangements = await getFinancialArrangements(familyData.family_id);
             setFinancialItems(arrangements);
