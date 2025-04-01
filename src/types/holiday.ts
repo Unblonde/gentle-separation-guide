@@ -10,4 +10,7 @@ export interface Holiday {
   pickupLocation: string;
   dropoffTime: string;
   dropoffLocation: string;
+  // Additional fields for database operations
+  family_id?: string;
+  created_by?: string;
 }

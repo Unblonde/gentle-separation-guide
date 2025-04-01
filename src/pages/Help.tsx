@@ -1,20 +1,11 @@
-
 import React, { useState, useEffect } from 'react';
 import GOVUKLayout from '../components/GOVUKLayout';
 import { Send, Info, MessageSquare, AlertTriangle } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { getFamilyForUser, getChatMessages, addChatMessage, subscribeToChatMessages } from '@/services/supabaseService';
 import { useToast } from '@/hooks/use-toast';
-
-interface Message {
-  id: string;
-  content: string;
-  sender: 'user' | 'assistant';
-  timestamp: Date;
-  sender_details?: {
-    full_name: string;
-  };
-}
+import { Message } from '@/types/message';
+import { supabase } from '@/integrations/supabase/client';
 
 const Help = () => {
   const { user } = useAuth();
@@ -52,7 +43,7 @@ const Help = () => {
               const newMsg = payload.new;
               
               // Fetch sender details if needed
-              const formattedMsg = {
+              const formattedMsg: Message = {
                 id: newMsg.id,
                 content: newMsg.content,
                 sender: newMsg.is_assistant ? 'assistant' : 'user',
@@ -63,7 +54,7 @@ const Help = () => {
             });
             
             return () => {
-              supabase.removeChannel(subscription);
+              subscription.unsubscribe();
             };
           } else {
             // Set default welcome message if no family

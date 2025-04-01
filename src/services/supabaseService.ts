@@ -1,6 +1,7 @@
 
 import { supabase } from '@/integrations/supabase/client';
 import { v4 as uuidv4 } from 'uuid';
+import { DatabaseExtended } from '@/types/database';
 
 // Profile services
 export const getProfile = async (userId: string) => {
@@ -94,6 +95,8 @@ export const acceptInvitation = async (token: string, userId: string, role: stri
     .single();
     
   if (inviteError) throw inviteError;
+  
+  if (!invitation) throw new Error('Invitation not found or already accepted');
   
   // Add user to the family
   const { data: memberData, error: memberError } = await supabase

@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import GOVUKLayout from '../components/GOVUKLayout';
@@ -7,6 +6,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAuth } from '@/contexts/AuthContext';
 import { getFamilyForUser, getFinancialArrangements, addFinancialArrangement, updateFinancialArrangement, subscribeToFinancialArrangements } from '@/services/supabaseService';
 import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/integrations/supabase/client';
 import {
   Dialog,
   DialogContent,
@@ -67,7 +67,7 @@ const Finances = () => {
           const familyData = await getFamilyForUser(user.id);
           setFamily(familyData);
           
-          if (familyData) {
+          if (familyData && familyData.family_id) {
             // Load financial arrangements
             const arrangements = await getFinancialArrangements(familyData.family_id);
             setFinancialItems(arrangements);
@@ -80,7 +80,7 @@ const Finances = () => {
             });
             
             return () => {
-              supabase.removeChannel(subscription);
+              subscription.unsubscribe();
             };
           }
         } catch (error: any) {

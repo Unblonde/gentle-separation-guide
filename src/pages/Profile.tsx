@@ -32,7 +32,9 @@ const Profile = () => {
           // Load user profile
           const profileData = await getProfile(user.id);
           setProfile(profileData);
-          setFullName(profileData.full_name || '');
+          if (profileData) {
+            setFullName(profileData.full_name || '');
+          }
           
           // Load family data
           const familyData = await getFamilyForUser(user.id);
