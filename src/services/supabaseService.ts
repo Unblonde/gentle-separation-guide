@@ -2,6 +2,7 @@
 import { supabase } from '@/integrations/supabase/client';
 import { v4 as uuidv4 } from 'uuid';
 import { DatabaseExtended } from '@/types/database';
+import { mapChatMessageToMessage } from '@/types/message';
 
 // Profile services
 export const getProfile = async (userId: string) => {
@@ -49,7 +50,11 @@ export const createFamily = async (userId: string, role: string) => {
     
   if (familyError) throw familyError;
   
-  const familyId = familyData[0].id;
+  const familyId = familyData?.[0]?.id;
+  
+  if (!familyId) {
+    throw new Error('Failed to create family unit');
+  }
   
   // Add current user as a family member
   const { data: memberData, error: memberError } = await supabase
@@ -141,7 +146,7 @@ export const addFinancialArrangement = async (arrangement: any) => {
     
   if (error) throw error;
   
-  return data[0];
+  return data?.[0];
 };
 
 export const updateFinancialArrangement = async (id: string, updates: any) => {
@@ -153,7 +158,7 @@ export const updateFinancialArrangement = async (id: string, updates: any) => {
     
   if (error) throw error;
   
-  return data[0];
+  return data?.[0];
 };
 
 // Holiday arrangements services
@@ -177,7 +182,7 @@ export const addHolidayArrangement = async (arrangement: any) => {
     
   if (error) throw error;
   
-  return data[0];
+  return data?.[0];
 };
 
 export const updateHolidayArrangement = async (id: string, updates: any) => {
@@ -189,7 +194,7 @@ export const updateHolidayArrangement = async (id: string, updates: any) => {
     
   if (error) throw error;
   
-  return data[0];
+  return data?.[0];
 };
 
 export const deleteHolidayArrangement = async (id: string) => {
@@ -224,7 +229,7 @@ export const addChatMessage = async (message: any) => {
     
   if (error) throw error;
   
-  return data[0];
+  return data?.[0];
 };
 
 // Set up real-time subscriptions

@@ -4,8 +4,7 @@ import { Send, Info, MessageSquare, AlertTriangle } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { getFamilyForUser, getChatMessages, addChatMessage, subscribeToChatMessages } from '@/services/supabaseService';
 import { useToast } from '@/hooks/use-toast';
-import { Message } from '@/types/message';
-import { supabase } from '@/integrations/supabase/client';
+import { Message, mapChatMessageToMessage } from '@/types/message';
 
 const Help = () => {
   const { user } = useAuth();
@@ -24,17 +23,11 @@ const Help = () => {
           const familyData = await getFamilyForUser(user.id);
           setFamily(familyData);
           
-          if (familyData) {
+          if (familyData && familyData.family_id) {
             // Load chat messages
             const chatMessages = await getChatMessages(familyData.family_id);
             
-            const formattedMessages = chatMessages.map((msg: any) => ({
-              id: msg.id,
-              content: msg.content,
-              sender: msg.is_assistant ? 'assistant' : 'user',
-              timestamp: new Date(msg.created_at),
-              sender_details: msg.profiles
-            }));
+            const formattedMessages = chatMessages.map((msg: any) => mapChatMessageToMessage(msg));
             
             setMessages(formattedMessages);
             
@@ -42,13 +35,7 @@ const Help = () => {
             const subscription = subscribeToChatMessages(familyData.family_id, (payload) => {
               const newMsg = payload.new;
               
-              // Fetch sender details if needed
-              const formattedMsg: Message = {
-                id: newMsg.id,
-                content: newMsg.content,
-                sender: newMsg.is_assistant ? 'assistant' : 'user',
-                timestamp: new Date(newMsg.created_at)
-              };
+              const formattedMsg = mapChatMessageToMessage(newMsg);
               
               setMessages(prev => [...prev, formattedMsg]);
             });
