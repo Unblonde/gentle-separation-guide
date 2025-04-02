@@ -6,6 +6,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAuth } from '@/contexts/AuthContext';
 import { getFamilyForUser, getFinancialArrangements, addFinancialArrangement, updateFinancialArrangement, subscribeToFinancialArrangements } from '@/services/supabaseService';
 import { useToast } from '@/hooks/use-toast';
+import { FamilyData, FamilyMember } from '@/types/family';
 import {
   Dialog,
   DialogContent,
@@ -42,7 +43,7 @@ const Finances = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [financialItems, setFinancialItems] = useState<FinancialItem[]>([]);
-  const [family, setFamily] = useState<{family_id: string} | null>(null);
+  const [family, setFamily] = useState<FamilyData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
   const [editItem, setEditItem] = useState<FinancialItem | null>(null);
@@ -64,7 +65,7 @@ const Finances = () => {
         try {
           // Load family data
           const familyData = await getFamilyForUser(user.id);
-          setFamily(familyData as {family_id: string} | null);
+          setFamily(familyData);
           
           if (familyData && 'family_id' in familyData) {
             // Load financial arrangements
@@ -151,7 +152,7 @@ const Finances = () => {
     if (!user || !family) return;
     
     try {
-      const isParentA = family.family_members?.some((member: any) => 
+      const isParentA = family.family_members?.some((member) => 
         member.user_id === user.id && member.role === 'Parent A'
       );
       
@@ -227,6 +228,16 @@ const Finances = () => {
         variant: "destructive",
       });
     }
+  };
+
+  const getFamilyMemberRole = (userId: string): string => {
+    if (!family.family_members) return '';
+    const member = family.family_members.find(m => m.user_id === userId);
+    return member?.role || '';
+  };
+
+  const isUserParentA = (userId: string): boolean => {
+    return getFamilyMemberRole(userId) === 'Parent A';
   };
 
   if (loading || isLoading) {

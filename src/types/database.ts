@@ -3,7 +3,7 @@
 import { Database as SupabaseDatabase } from '@/integrations/supabase/types';
 
 // Extended Database type with our tables
-export interface DatabaseExtended {
+export type Database = {
   public: {
     Tables: {
       profiles: {
@@ -203,14 +203,9 @@ export interface DatabaseExtended {
     Enums: {};
     CompositeTypes: {};
   };
-}
-
-// Force TypeScript to use our extended database type
-declare global {
-  type Database = DatabaseExtended;
-}
+};
 
 // Override the default Database type in Supabase
 declare module '@supabase/supabase-js' {
-  export interface Database extends DatabaseExtended {}
+  export interface Database extends Database {}
 }
